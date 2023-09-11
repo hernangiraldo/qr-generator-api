@@ -1,0 +1,8 @@
+export enum EQrType {
+  URL = 'URL',
+  LOCATION = 'LOCATION',
+  DOCUMENT = 'DOCUMENT',
+  EVENT = 'EVENT',
+  STORES = 'STORES',
+  DEEP_LINK = 'DEEP_LINK',
+}
