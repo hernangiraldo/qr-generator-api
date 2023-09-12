@@ -1,14 +1,23 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { EnvConfigModule, EnvConfigService } from 'src/env-config';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017', {
-      user: 'root',
-      pass: 'root',
-      dbName: 'qr-db',
+    MongooseModule.forRootAsync({
+      useFactory: (envConfigSvc: EnvConfigService) => {
+        const { db } = envConfigSvc.config;
+        const { type, host, port, username, password, database } = db;
+        return {
+          uri: `${type}://${host}:${port}`,
+          user: username,
+          pass: password,
+          dbName: database,
+        };
+      },
+      imports: [EnvConfigModule],
+      inject: [EnvConfigService],
     }),
   ],
-  exports: [MongooseModule],
 })
 export class DbModule {}

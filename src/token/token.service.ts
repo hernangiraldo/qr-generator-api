@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CipherService } from 'src/cipher/cipher.service';
+import { EnvConfigService } from 'src/env-config';
 
 @Injectable()
 export class TokenService {
   constructor(
     private jwtSvc: JwtService,
     private cipherSvc: CipherService,
+    private envConfigSvc: EnvConfigService,
   ) {}
 
   async getTokens(
@@ -25,8 +27,8 @@ export class TokenService {
           sub: enc.toString(),
         },
         {
-          secret: 'secret',
-          expiresIn: '15m',
+          secret: this.envConfigSvc.config.jwt.secretKey,
+          expiresIn: this.envConfigSvc.config.jwt.accesTokenTime,
         },
       ),
       this.jwtSvc.signAsync(
@@ -34,8 +36,8 @@ export class TokenService {
           sub: enc.toString(),
         },
         {
-          secret: 'secret',
-          expiresIn: '7d',
+          secret: this.envConfigSvc.config.jwt.secretKey,
+          expiresIn: this.envConfigSvc.config.jwt.refreshTokenTime,
         },
       ),
     ]);
